@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep and Calorie Chart</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<style>
+  body {
+        font-family: 'Arial';
+    }
+    .referenceLine {
+        fill: none;
+        stroke: #aaa;
+        stroke-dasharray: 2,2;
+    }
+    .radialReferenceLine {
+        fill: none;
+        stroke: #bbb;
+    }
+</style>
+<body>
+    <script>
+        // 假设的睡眠和卡路里数据
+        const sleepAndCalorieData = [
+            // 示例数据，用实际数据替换
+
+            //Jan
+            { day: 1, averageAwake: 0.23, averageRem: 0.75, averageCore: 3.75, averageDeep: 0.83, calories: 501 },
+            { day: 2, averageAwake: 0.17, averageRem: 1.5, averageCore: 4, averageDeep: 0.75, calories: 252 },
+            { day: 3, averageAwake: 0.17, averageRem: 1, averageCore: 3, averageDeep: 0.5, calories: 508 },
+            { day:4, averageAwake: 0.54, averageRem: 2.3, averageCore: 3.5, averageDeep: 1, calories: 343 },
+            { day: 5, averageAwake: 0.17, averageRem: 2.3, averageCore: 5, averageDeep: 0.5, calories: 636 },
+            { day: 6, averageAwake: 0.07, averageRem: 1.83, averageCore: 4, averageDeep: 0.5, calories: 176 },
+            { day: 7, averageAwake: 0.083, averageRem: 0.5, averageCore: 1.5, averageDeep: 1, calories: 627 },
+            { day: 8, averageAwake: 0.17, averageRem: 0.58, averageCore: 2.67, averageDeep: 0.67, calories: 520 },
+            { day: 9, averageAwake: 0.1, averageRem: 1.33, averageCore: 4.2, averageDeep: 0.75, calories: 704 },
+            { day: 10, averageAwake: 0.1, averageRem: 2, averageCore: 6, averageDeep: 0.58, calories: 459 },
+            { day: 11, averageAwake: 0.2, averageRem: 0.6, averageCore: 2.3, averageDeep: 0.17, calories: 527 },
+            { day: 12, averageAwake: 0.5, averageRem: 1.41, averageCore: 5, averageDeep: 0.17, calories: 563},
+            { day: 13, averageAwake: 0.17, averageRem: 0.75, averageCore: 3.4, averageDeep: 1, calories: 534 },
+            { day: 14, averageAwake: 2.8, averageRem: 2.2, averageCore: 5.3, averageDeep: 0.83, calories: 666 },
+            { day: 15, averageAwake: 0.05, averageRem: 0.85, averageCore: 4.85, averageDeep: 0.26, calories: 652 },
+            { day: 16, averageAwake: 0.05, averageRem: 1.45, averageCore: 5.1, averageDeep: 0.67, calories: 590 },
+            { day: 17, averageAwake: 0.05, averageRem: 1.85, averageCore: 5, averageDeep: 0.7, calories: 623 },
+            { day: 18, averageAwake: 0.1, averageRem: 1.75, averageCore: 4, averageDeep: 0.75, calories: 511 },
+            { day: 19, averageAwake: 0.1, averageRem: 1.1, averageCore: 4.75, averageDeep: 0.4, calories: 549 },
+            { day: 20, averageAwake: 0.1, averageRem: 1.9, averageCore: 4.75, averageDeep: 1, calories: 684 },
+            { day: 21, averageAwake: 0.75, averageRem: 1.1, averageCore: 3.5, averageDeep: 0.85, calories: 607 },
+            { day: 22, averageAwake: 0.2, averageRem: 1.5, averageCore: 3.75, averageDeep: 0.75, calories: 604 },
+            { day: 23, averageAwake: 0, averageRem: 1.6, averageCore: 3.4, averageDeep: 1.2, calories: 641 },
+            { day: 24, averageAwake: 0.33, averageRem: 1.9, averageCore: 5.3, averageDeep: 0.5, calories: 518 },
+            { day: 25, averageAwake: 0.17, averageRem: 1.67, averageCore: 4.45, averageDeep: 1, calories: 508 },
+            { day: 26, averageAwake: 0.1, averageRem: 1.5, averageCore: 4.17, averageDeep: 0.6, calories: 677 },
+            { day: 27, averageAwake: 0.2, averageRem: 1.75, averageCore: 4.5, averageDeep: 0.17, calories: 1010 },
+            { day: 28, averageAwake: 0.1, averageRem: 1.17, averageCore: 4.5, averageDeep: 0.33, calories: 792 },
+            { day: 29, averageAwake: 0.1, averageRem: 0.5, averageCore: 2.35, averageDeep: 0.7, calories: 998 },
+            { day: 30, averageAwake: 0.1, averageRem: 1.25, averageCore: 3.75, averageDeep: 1.05, calories: 406},
+            { day: 31, averageAwake: 0.07, averageRem: 1.4, averageCore: 3.6, averageDeep: 1, calories: 661 },
+           //Feb
+            { day: 31, averageAwake: 0.25, averageRem: 1.41, averageCore: 4.75, averageDeep: 1.17, calories: 372 },
+            { day: 32, averageAwake: 0.1, averageRem: 2, averageCore: 6, averageDeep: 0.58, calories: 459 },
+            { day: 33, averageAwake: 0.2, averageRem: 0.6, averageCore: 2.3, averageDeep: 0.17, calories: 527 },
+            { day: 34, averageAwake: 0.5, averageRem: 1.41, averageCore: 5, averageDeep: 0.17, calories: 563},
+            { day: 35, averageAwake: 0.17, averageRem: 0.75, averageCore: 3.4, averageDeep: 1, calories: 534 },
+            { day: 36, averageAwake: 1.8, averageRem: 2.7, averageCore: 5.3, averageDeep: 1.3, calories: 666 },
+            { day: 37, averageAwake: 0.05, averageRem: 0.85, averageCore: 4.85, averageDeep: 0.26, calories: 652 },
+            { day: 38, averageAwake: 0.05, averageRem: 1.45, averageCore: 5.1, averageDeep: 0.67, calories: 590 },
+            { day: 39, averageAwake: 0.05, averageRem: 1.85, averageCore: 5, averageDeep: 0.7, calories: 623 },
+            { day: 40, averageAwake: 0.1, averageRem: 1.75, averageCore: 4, averageDeep: 0.75, calories: 511 },
+            { day: 41, averageAwake: 0.1, averageRem: 1.1, averageCore: 4.75, averageDeep: 0.4, calories: 549 },
+            { day: 42, averageAwake: 0.1, averageRem: 1.9, averageCore: 4.75, averageDeep: 1, calories: 684 },
+            { day: 43, averageAwake: 0.75, averageRem: 1.1, averageCore: 3.5, averageDeep: 0.85, calories: 607 },
+            { day: 44, averageAwake: 0.2, averageRem: 1.5, averageCore: 3.75, averageDeep: 0.75, calories: 604 },
+            { day: 45, averageAwake: 0.1, averageRem: 2, averageCore: 6, averageDeep: 0.58, calories: 459 },
+            { day: 46, averageAwake: 0.2, averageRem: 0.6, averageCore: 2.3, averageDeep: 0.17, calories: 527 },
+            { day: 47, averageAwake: 0.5, averageRem: 1.41, averageCore: 5, averageDeep: 0.17, calories: 563},
+            { day: 48, averageAwake: 0.17, averageRem: 0.75, averageCore: 3.4, averageDeep: 1, calories: 534 },
+            { day: 49, averageAwake: 2.8, averageRem: 2.2, averageCore: 5.3, averageDeep: 0.83, calories: 666 },
+            { day: 50, averageAwake: 0.05, averageRem: 0.85, averageCore: 4.85, averageDeep: 0.26, calories: 652 },
+            { day: 51, averageAwake: 0.05, averageRem: 1.45, averageCore: 5.1, averageDeep: 0.67, calories: 590 },
+            { day: 52, averageAwake: 0.05, averageRem: 1.85, averageCore: 5, averageDeep: 0.7, calories: 623 },
+            { day: 53, averageAwake: 0.1, averageRem: 1.75, averageCore: 4, averageDeep: 0.75, calories: 511 },
+            { day: 54, averageAwake: 0.1, averageRem: 1.1, averageCore: 4.75, averageDeep: 0.4, calories: 549 },
+            { day: 55, averageAwake: 0.1, averageRem: 1.9, averageCore: 4.75, averageDeep: 1, calories: 684 },
+            { day: 56, averageAwake: 0.75, averageRem: 1.1, averageCore: 3.5, averageDeep: 0.85, calories: 607 },
+            { day: 57, averageAwake: 0.2, averageRem: 1.5, averageCore: 3.75, averageDeep: 0.75, calories: 604 },
+            { day: 58, averageAwake: 0.17, averageRem: 0.75, averageCore: 3.4, averageDeep: 1, calories: 834 },
+            { day: 59, averageAwake: 0.05, averageRem: 1.85, averageCore: 5, averageDeep: 0.7, calories: 923 },
+               
+        ];
+        
+
+        function formatDate(day) {
+        const monthNames = ["Jan", "Feb"];
+        // 2024年1月有31天，2月（因为是闰年）有29天
+        const monthDays = [31, 29];
+        let monthIndex = day > 31 ? 1 : 0; // 如果day大于31，表示进入二月
+        let date = day > 31 ? day - 31 : day; // 计算实际的日期
+        return monthNames[monthIndex] + " " + date;
+    }
+        const width = 1500, height = 1500;
+        const outerRadius = Math.min(width, height) / 2; // 外半径
+       
+        const gap = 0.05; // 每个柱子之间的空隙大小（以弧度为单位）
+        const angleScale = d3.scaleLinear() // 定义一次，用于整个SVG的角度计算
+            .domain([0, sleepAndCalorieData.length])
+            .range([0, 2 * Math.PI]);
+
+        // 创建SVG容器
+        const svg = d3.select('body').append('svg')
+            .attr('width', width)
+            .attr('height', height)
+            .append('g')
+            .attr('transform', `translate(${width / 2}, ${height / 2})`);
+
+        // 计算睡眠时间的最大值
+        const maxSleepTime = d3.max(sleepAndCalorieData, d => d.averageAwake + d.averageRem + d.averageCore + d.averageDeep);
+
+  
+
+        // 处理堆积数据
+        const stack = d3.stack().keys(["averageAwake", "averageRem", "averageCore", "averageDeep"]);
+        const stackedData = stack(sleepAndCalorieData.map(d => ({
+            averageAwake: d.averageAwake, averageRem: d.averageRem, averageCore: d.averageCore, averageDeep: d.averageDeep
+        })));
+        const innerRadius = 100; // 为中心圆形留出空间的内半径
+        const centerCircleRadius = 80; // 中心圆形的半径
+        // 创建一个比例尺，将数据映射到角度
+  
+
+        sleepAndCalorieData.forEach((d, i) => {
+            const angle = angleScale(i);
+            const lineLength = outerRadius; // 可以调整为指向具体卡路里圆的外半径
+            const x = lineLength * Math.cos(angle - Math.PI / 2); // 调整角度使起点为顶部
+            const y = lineLength * Math.sin(angle - Math.PI / 2);
+
+            // svg.append("line")
+            //     .attr("class", "radialReferenceLine")
+            //     .attr("x1", 0)
+            //     .attr("y1", 0)
+            //     .attr("x2", x)
+            //     .attr("y2", y)
+            //     .attr("stroke-width", 1);
+        });
+        // 绘制堆积柱状图
+        const colors = ['#EEDC93', '#BEB284', '#918C77', '#6C6C6C'];
+        stackedData.forEach((layer, index) => {
+            layer.forEach((d, i) => {
+                const startAngle = angleScale(i) + gap / 2;
+                const endAngle = angleScale(i + 1) - gap / 2;
+
+                svg.append('path')
+                    .attr('d', d3.arc()
+                        .innerRadius(outerRadius * (d[0] / 15)) // 根据实际数据调整
+                        .outerRadius(outerRadius * (d[1] / 15)) // 根据实际数据调整
+                        .startAngle(startAngle)
+                        .endAngle(endAngle))
+                        .attr('fill', colors[index % colors.length]); // 使用指定颜色
+            });
+        });
+
+        // 在每个柱子顶部添加代表卡路里消耗的圆点
+        sleepAndCalorieData.forEach((d, i) => {
+        const angle = angleScale(i) + angleScale(1) / 2; // 计算角度，使其位于扇区中央
+        const textOffset = 20; // 设置文本偏移量，即文本与圆点之间的距离
+        const baseRadius = outerRadius - 110 + Math.sqrt(d.calories) + textOffset; // 计算文本的基准半径，包括圆点的半径和额外的文本偏移
+        const x = baseRadius * Math.cos(angle - Math.PI / 2); // 计算文本位置的x坐标
+        const y = baseRadius * Math.sin(angle - Math.PI / 2); // 计算文本位置的y坐标
+
+        // 动态计算圆点的半径，这里我们直接使用卡路里数据的一部分
+        const circleRadius = Math.sqrt(d.calories); // 示例：根据卡路里的平方根来动态调整大小
+
+        // 绘制圆点
+        svg.append('circle')
+            .attr('cx', x)
+            .attr('cy', y)
+            .attr('r', circleRadius)
+            .attr('fill', 'red')
+            .attr('opacity', 0.3); // 使圆点半透明以增加视觉效果
+
+            svg.append('text')
+            .attr('x', x)
+            .attr('y', y)
+            .attr('text-anchor', 'middle') // 确保文本居中对齐于其计算位置
+            .attr('fill', 'black')
+            .style('font-size', '20px') // 可以调整字体大小
+            .style('dominant-baseline', 'central') // 优化文本的垂直对齐方式
+            .attr('transform', `rotate(${(angle / Math.PI * 180)} ${x} ${y})`) // 根据圆点位置旋转文本，以匹配放射状布局
+            .text(formatDate(d.day)); // 显示日期
+    });
+
+    </script>
+</body>
+</html>

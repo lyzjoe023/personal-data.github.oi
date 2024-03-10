@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+   .images-container {
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+}
+
+.resize-image {
+    width: 25%; /* 或者使用具体的px值来设置宽度 */
+    height: auto; /* 保持图片的纵横比 */
+    padding: 30px; /* 可选，增加图片之间的间距 */
+}
+    body{
+        color: white;
+        background-color: #44444B; /* 浅灰色 */
+        display: flex;
+        flex-direction: column; /* 添加这一行使内容垂直居中 */
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh; /* 使body高度至少为视口高度，以便垂直居中 */
+        margin: 0; /* 去除默认边距 */
+    }
+   h1{
+        font-size: 50px;
+    }
+    li{
+        font-size: 30px;
+    }
+    h2{
+        font-size: 40px;
+    }
+  
+</style>
+<body>
+    <h1>Description for design and data collection</h1>
+    <li><a href="https://docs.google.com/presentation/d/1qFTLqW-P2JgGEG4ZhDF8CBYTWsV3gN8r_qwQu1AlTJ0/edit#slide=id.p"> Design Book</a></li>
+    <h2>Description for Process and Final Design</h2>
+    <div id="chart-description" style="text-align: left; margin-top: 20px; font-family: Arial; font-size: 25px; max-width: 1400px; margin-left: auto; margin-right: auto;">
+    The idea and source of inspiration for this assignment is what I am most concerned about recently. During the epidemic, due to the lack of long-term and regular physical exercise and sports, although I was lucky enough not to get COVID-19, I still feel that my personal physical condition has changed significantly. I have gained nearly 10kg and my physical strength is obviously not as good as before. More importantly, due to lack of exercise, my sleep quality has also significantly declined. Therefore, since the beginning of last year, I have gradually resumed systematic exercise. Daily calorie consumption and sleep quality have become the data that I am most concerned about recently.
+<br>  <br>  In order to explore whether there is a relationship between the quality of my sleep and my daily calorie consumption, whether the quality of sleep will make me burn more calories or make me more interested in exercising. I decided to combine these two independent data together to explore whether there is any relationship between the two. Therefore, I collected sleep and exercise calorie consumption data in the past six months, and use D3.js to make a visual chart that can compare the two data. There are four data that determine the quality of sleep, averageAwake, averageRem, averageCore and averageDeep. The sum of the four times is the total sleep time of the day. Generally speaking, the longer the sleep, the better, but the quality of sleep is mainly based on the time of core sleep and deep sleep. It is meaningless if averageAwake and averageRem, averageCore and averageDeep are too short.
+
+<br>  <br>  In terms of chart design, I decided to make a ring-shaped bar chart. On the one hand, such a table is more novel. In addition, since my data is related to time, the ring bar chart is similar to a clock, which makes it more immersive. In addition to the sleep quality data, the calorie data is represented by a round sphere. The more calories you burn that day, the bigger the sphere becomes. In the first version of the graph, I only used data from January and February 2024, but due to the lack of auxiliary things, such as auxiliary lines, text information, and legend, the icon is difficult to read. Other than that, the two months data was unconvincing, so I decided to extend the dataset to the past 6 months. In the second version of the chart, I not only added text, auxiliary lines and legends, but also imported the data from September 2023 to February 2024 into the chart. It is worth noting that most of the spheres are stacked together. This is because the minimum daily calorie consumption I set is 500 calories. Anything over 500 calories will exceed the calorie range in the chart and overlap with other data.
+<br>  <br>  In the final version, because there is too much data, it is difficult for the text to help the audience understand my charts, so I made the charts dynamic, and the data will be displayed day by day from the first day of 2023 to the second day of 2024. They are displayed one by one on the 29th of the month. Generally, the data in the chart will be explained with numbers, such as date, hours of sleep, and calorie consumption. But in my final chart I decided to subvert the original visualization, I try not to include a single number, whether it was calories burned, sleep duration, or even the date of the data. By comparing it with the data of each day, people can know from the size of the sphere whether I have consumed more or less calories. The overlap of the spheres means that my amount of exercise exceeds the daily average (for me). In addition, the length of the bar chart also tells a lot about the amount of sleep I got. When the column is closer to my outermost reference line, it means that my sleep time will reach the optimal sleep time. Therefore, even if there are no numbers in the chart, the audience can still understand what I am expressing.
+</div>
+
+    <div class="images-container">
+        <img src="process 1.png" alt="Calories Data" class="resize-image">
+        <img src="process 2.png" alt="Sleep Data" class="resize-image">
+        <img src="final image.png" alt="Sleep Data" class="resize-image">
+    </div>
+
+    <h2>Description for Data Collection</h2>
+    <div id="chart-description" style="text-align: left; margin-top: 20px; font-family: Arial; font-size: 25px; max-width: 1400px; margin-left: auto; margin-right: auto;">
+        My data are calories consumption by daily exercise and daily sleep quality. The data source is mainly based on exercise calorie consumption and daily sleep quality recorded while wearing Apple Watch. Although the data is not necessarily accurate, it largely represents my sleep quality and calorie consumption during exercise. Because I used other software and watches to record calorie and sleep quality data before September last year, there may be deviations in data collection and definition due to different software algorithms. For the sake of data unification, I decided to only use the data from September 2023 to the present as this personal data.</div>
+        
+        <div class="images-container">
+            <img src="calories data.png" alt="Calories Data" class="resize-image">
+            <img src="sleep data.png" alt="Sleep Data" class="resize-image">
+        </div>
+
+
+    
+</body>
+</html>

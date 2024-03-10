@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta viewport="width=device-width, initial-scale=1.0">
+    <title>Sleep and Calorie Chart Animation</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+        <style>
+        h1{
+        color: white;
+        position: absolute;
+        top: 0px; /* 距离上方50px */
+        left: 350px; /* 距离左侧100px */
+        }
+
+        h3{
+    color: white;
+        position: absolute;
+        top: 50px; /* 距离上方50px */
+        left: 470px; /* 距离左侧100px */
+        }
+
+         body {
+        position: absolute;
+        background-color: #44444B/* 浅灰色 */
+        
+         }
+        /* 样式调整 */
+        .referenceLine {
+            fill: none;
+            stroke: #ccc;
+            stroke-dasharray: 3;
+        }
+
+        /* .tooltip {
+            position: absolute;
+            text-align: center;
+            width: 120px;
+            height: auto;
+            padding: 10px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 1;
+    } */
+
+    </style>
+</head>
+    
+<body>
+    <div class="tooltip"></div>
+    <h1>Assignment Representations of Personal Data</h1>
+    <h3>Personal Data from 09/01/2023 to 02/29/2024</h3>
+    <script>
+        const sleepAndCalorieData = [
+             //Sep  
+            { day: 1, averageAwake: 1.58, averageRem: 2.06, averageCore: 3.01, averageDeep: 1.21, calories: 721 },
+            { day: 2, averageAwake: 1.2, averageRem: 1.55, averageCore: 4.62, averageDeep: 1.42, calories: 868 },
+            { day: 3, averageAwake: 1.15, averageRem: 3.05, averageCore: 2.91, averageDeep: 0.22, calories: 372 },
+            { day: 4, averageAwake: 1.98, averageRem: 2.05, averageCore: 4.48, averageDeep: 0.46, calories: 640 },
+            { day: 5, averageAwake: 1.28, averageRem: 2.11, averageCore: 4.74, averageDeep: 0.92, calories: 309 },
+            { day: 6, averageAwake: 1.6, averageRem: 2.92, averageCore: 2.89, averageDeep: 1.38, calories: 634 },
+            { day: 7, averageAwake: 1.33, averageRem: 3.14, averageCore: 2.69, averageDeep: 1.36, calories: 568 },
+            { day: 8, averageAwake: 1.48, averageRem: 2.54, averageCore: 2.56, averageDeep: 0.62, calories: 411 },
+            { day: 9, averageAwake: 1.55, averageRem: 1.96, averageCore: 2.2, averageDeep: 0.28, calories: 257 },
+            { day: 10, averageAwake: 1.66, averageRem: 3.43, averageCore: 2.47, averageDeep: 0.8, calories: 942 },
+            { day: 11, averageAwake: 1.34, averageRem: 1.96, averageCore: 6.32, averageDeep: 0.52, calories: 785 },
+            { day: 12, averageAwake: 1.02, averageRem: 2.44, averageCore: 5.57, averageDeep: 0.33, calories: 994 },
+            { day: 13, averageAwake: 1.79, averageRem: 2.41, averageCore: 2.38, averageDeep: 1.14, calories: 879 },
+            { day: 14, averageAwake: 0.84, averageRem: 1.84, averageCore: 2.17, averageDeep: 0.39, calories: 816 },
+            { day: 15, averageAwake: 0.26, averageRem: 1.29, averageCore: 2.9, averageDeep: 0.72, calories: 886 },
+            { day: 16, averageAwake: 0.2, averageRem: 1.48, averageCore: 3.36, averageDeep: 0.76, calories: 271 },
+            { day: 17, averageAwake: 1.31, averageRem: 2.85, averageCore: 5, averageDeep: 1.7, calories: 623 },
+            { day: 18, averageAwake: 0.1, averageRem: 1.75, averageCore: 4, averageDeep: 0.75, calories: 511 },
+            { day: 19, averageAwake: 0.1, averageRem: 1.1, averageCore: 4.75, averageDeep: 0.4, calories: 549 },
+            { day: 20, averageAwake: 0.1, averageRem: 1.9, averageCore: 4.75, averageDeep: 1, calories: 684 },
+            { day: 21, averageAwake: 0.75, averageRem: 1.1, averageCore: 3.5, averageDeep: 0.85, calories: 607 },
+            { day: 22, averageAwake: 0.2, averageRem: 1.5, averageCore: 3.75, averageDeep: 0.75, calories: 604 },
+            { day: 23, averageAwake: 0, averageRem: 1.6, averageCore: 3.4, averageDeep: 1.2, calories: 641 },
+            { day: 24, averageAwake: 0.33, averageRem: 1.9, averageCore: 5.3, averageDeep: 0.5, calories: 518 },
+            { day: 25, averageAwake: 0.17, averageRem: 1.67, averageCore: 4.45, averageDeep: 1, calories: 508 },
+            { day: 26, averageAwake: 0.1, averageRem: 2.5, averageCore: 4.17, averageDeep: 0.6, calories: 677 },
+            { day: 27, averageAwake: 0.2, averageRem: 2.75, averageCore: 4.5, averageDeep: 0.17, calories: 1010 },
+            { day: 28, averageAwake: 0.1, averageRem: 2.17, averageCore: 4.5, averageDeep: 0.33, calories: 792 },
+            { day: 29, averageAwake: 0.1, averageRem: 2.5, averageCore: 2.35, averageDeep: 0.7, calories: 998 },
+            { day: 30, averageAwake: 0.1, averageRem: 2.25, averageCore: 3.75, averageDeep: 1.05, calories: 406 },
+        
+             //Oct
+            { day: 1, averageAwake: 0.83, averageRem: 1.76, averageCore: 4.65, averageDeep: 0.27, calories: 995 },
+            { day: 2, averageAwake: 1.63, averageRem: 0.95, averageCore: 3.14, averageDeep: 0.69, calories: 642 },
+            { day: 3, averageAwake: 0.46, averageRem: 3.21, averageCore: 4.21, averageDeep: 1.08, calories: 216 },
+            { day: 4, averageAwake: 1.17, averageRem: 1.77, averageCore: 2.83, averageDeep: 0.58, calories: 572 },
+            { day: 5, averageAwake: 0.59, averageRem: 2.18, averageCore: 5.66, averageDeep: 0.32, calories: 638 },
+            { day: 6, averageAwake: 0.87, averageRem: 3.51, averageCore: 3.98, averageDeep: 1.84, calories: 354 },
+            { day: 7, averageAwake: 0.71, averageRem: 2.99, averageCore: 2.45, averageDeep: 1.95, calories: 958 },
+            { day: 8, averageAwake: 0.88, averageRem: 1.34, averageCore: 4.37, averageDeep: 0.23, calories: 976 },
+            { day: 9, averageAwake: 1.04, averageRem: 2.71, averageCore: 2.99, averageDeep: 1.16, calories: 528 },
+            { day: 10, averageAwake: 1.11, averageRem: 2.85, averageCore: 4.75, averageDeep: 0.6, calories: 678 },
+            { day: 11, averageAwake: 0.68, averageRem: 1.64, averageCore: 5.83, averageDeep: 0.37, calories: 530 },
+            { day: 12, averageAwake: 1.22, averageRem: 0.9, averageCore: 2.67, averageDeep: 0.54, calories: 863 },
+            { day: 13, averageAwake: 0.56, averageRem: 1.52, averageCore: 3.53, averageDeep: 0.99, calories: 688 },
+            { day: 14, averageAwake: 1.76, averageRem: 2.67, averageCore: 4.26, averageDeep: 1.71, calories: 643 },
+            { day: 15, averageAwake: 0.41, averageRem: 0.65, averageCore: 4.88, averageDeep: 1.01, calories: 497 },
+            { day: 16, averageAwake: 0.14, averageRem: 0.82, averageCore: 3.5, averageDeep: 1.11, calories: 766 },
+            { day: 17, averageAwake: 1.77, averageRem: 1.97, averageCore: 2.18, averageDeep: 0.47, calories: 699 },
+            { day: 18, averageAwake: 1.46, averageRem: 0.97, averageCore: 5.38, averageDeep: 0.49, calories: 654 },
+            { day: 19, averageAwake: 1.5, averageRem: 0.84, averageCore: 3.43, averageDeep: 0.38, calories: 416 },
+            { day: 20, averageAwake: 0.98, averageRem: 2.52, averageCore: 3.03, averageDeep: 1.04, calories: 335 },
+            { day: 21, averageAwake: 1.18, averageRem: 1.46, averageCore: 2.25, averageDeep: 0.87, calories: 276 },
+            { day: 22, averageAwake: 0.52, averageRem: 1.17, averageCore: 3.22, averageDeep: 1.09, calories: 677 },
+            { day: 23, averageAwake: 1.27, averageRem: 1.52, averageCore: 4.34, averageDeep: 0.24, calories: 282 },
+            { day: 24, averageAwake: 1.34, averageRem: 2.45, averageCore: 4.07, averageDeep: 0.18, calories: 358 },
+            { day: 25, averageAwake: 1.14, averageRem: 2.52, averageCore: 5.58, averageDeep: 0.87, calories: 315 },
+            { day: 26, averageAwake: 1.99, averageRem: 1.76, averageCore: 4.18, averageDeep: 0.26, calories: 622 },
+            { day: 27, averageAwake: 1.32, averageRem: 1.5, averageCore: 1.76, averageDeep: 0.7, calories: 563 },
+            { day: 28, averageAwake: 0.53, averageRem: 1.98, averageCore: 2.44, averageDeep: 0.98, calories: 829 },
+            { day: 29, averageAwake: 1.33, averageRem: 2.68, averageCore: 5.87, averageDeep: 0.17, calories: 362 },
+            { day: 30, averageAwake: 0.09, averageRem: 2.14, averageCore: 1.96, averageDeep: 0.62, calories: 722 },
+            { day: 31, averageAwake: 1.71, averageRem: 3, averageCore: 2.45, averageDeep: 0.95, calories: 958 },
+
+             
+             //Nov
+             { day: 1, averageAwake: 0.44, averageRem: 1.19, averageCore: 5.56, averageDeep: 0.62, calories: 244 },
+            { day: 2, averageAwake: 0.17, averageRem: 1.76, averageCore: 3.11, averageDeep: 1.12, calories: 220 },
+            { day: 3, averageAwake: 0.94, averageRem: 4, averageCore: 3.48, averageDeep: 0.36, calories: 825 },
+            { day: 4, averageAwake: 0.48, averageRem: 3.74, averageCore: 5.02, averageDeep: 0.85, calories: 475 },
+            { day: 5, averageAwake: 1.48, averageRem: 2.08, averageCore: 4.12, averageDeep: 0.82, calories: 590 },
+            { day: 6, averageAwake: 1.67, averageRem: 2.3, averageCore: 3.59, averageDeep: 0.59, calories: 283 },
+            { day: 7, averageAwake: 1.0, averageRem: 2, averageCore: 2.88, averageDeep: 0.94, calories: 651 },
+            { day: 8, averageAwake: 1.04, averageRem: 0.7, averageCore: 2.12, averageDeep: 0.3, calories: 281 },
+            { day: 9, averageAwake: 0.58, averageRem: 1.41, averageCore: 5.72, averageDeep: 0.77, calories: 572 },
+            { day: 10, averageAwake: 1.18, averageRem: 2.44, averageCore: 5.16, averageDeep: 1.44, calories: 585 },
+            { day: 11, averageAwake: 1, averageRem: 2.85, averageCore: 3.35, averageDeep: 0.4, calories: 492 },
+            { day: 12, averageAwake: 0.51, averageRem: 1.16, averageCore: 3.38, averageDeep: 0.44, calories: 834 },
+            { day: 13, averageAwake: 1.44, averageRem: 2.98, averageCore: 3.66, averageDeep: 0.32, calories: 429 },
+            { day: 14, averageAwake: 1.75, averageRem: 2.17, averageCore: 3.61, averageDeep: 0.69, calories: 258 },
+            { day: 15, averageAwake: 1.8, averageRem: 1.88, averageCore: 4.72, averageDeep: 0.92, calories: 416 },
+            { day: 16, averageAwake: 1.14, averageRem: 0.87, averageCore: 3.42, averageDeep: 1.09, calories: 761 },
+            { day: 17, averageAwake: 0.26, averageRem: 1.48, averageCore: 5.34, averageDeep: 1.12, calories: 242 },
+            { day: 18, averageAwake: 1.6, averageRem: 1.77, averageCore: 2.35, averageDeep: 0.6, calories: 254 },
+            { day: 19, averageAwake: 1.34, averageRem: 1.65, averageCore: 3.29, averageDeep: 0.35, calories: 523 },
+            { day: 20, averageAwake: 1.76, averageRem: 3.87, averageCore: 2.71, averageDeep: 0.74, calories: 635 },
+            { day: 21, averageAwake: 0.67, averageRem: 2.82, averageCore: 2.58, averageDeep: 1.09, calories: 910 },
+            { day: 22, averageAwake: 1.27, averageRem: 2.65, averageCore: 3.92, averageDeep: 0.63, calories: 620 },
+            { day: 23, averageAwake: 0.62, averageRem: 1.33, averageCore: 3.82, averageDeep: 1.04, calories: 603 },
+            { day: 24, averageAwake: 0.19, averageRem: 2.09, averageCore: 5.45, averageDeep: 2.41, calories: 933 },
+            { day: 25, averageAwake: 0.97, averageRem: 1.54, averageCore: 3.94, averageDeep: 0.88, calories: 482 },
+            { day: 26, averageAwake: 0.56, averageRem: 2.85, averageCore: 1.96, averageDeep: 1.16, calories: 760 },
+            { day: 27, averageAwake: 1.29, averageRem: 2.86, averageCore: 2.96, averageDeep: 0.8, calories: 527 },
+            { day: 28, averageAwake: 1.27, averageRem: 1.99, averageCore: 5.31, averageDeep: 1.02, calories: 923 },
+            { day: 29, averageAwake: 0.51, averageRem: 4, averageCore: 5.71, averageDeep: 0.32, calories: 759 },
+            { day: 30, averageAwake: 1.38, averageRem: 2.87, averageCore: 5.87, averageDeep: 0.77, calories: 649 },
+              
+            //Dec
+            { day: 1, averageAwake: 1.05, averageRem: 2.65, averageCore: 4.04, averageDeep: 0.95, calories: 722 },
+            { day: 2, averageAwake: 0.74, averageRem: 1.26, averageCore: 4.8, averageDeep: 1.1, calories: 684 },
+            { day: 3, averageAwake: 1.29, averageRem: 0.62, averageCore: 3.67, averageDeep: 0.6, calories: 375 },
+            { day: 4, averageAwake: 0.93, averageRem: 0.9, averageCore: 2.17, averageDeep: 1.12, calories: 633 },
+            { day: 5, averageAwake: 0.22, averageRem: 2.68, averageCore: 3, averageDeep: 1.0, calories: 897 },
+            { day: 6, averageAwake: 0.51, averageRem: 2.82, averageCore: 3.46, averageDeep: 0.24, calories: 932 },
+            { day: 7, averageAwake: 0.31, averageRem: 3.72, averageCore: 3.55, averageDeep: 0.25, calories: 980 },
+            { day: 8, averageAwake: 0.06, averageRem: 3.17, averageCore: 4.35, averageDeep: 1.15, calories: 232 },
+            { day: 9, averageAwake: 1.03, averageRem: 0.72, averageCore: 4.95, averageDeep: 1.07, calories: 314 },
+            { day: 10, averageAwake: 0.73, averageRem: 2.97, averageCore: 3.19, averageDeep: 0.24, calories: 353 },
+            { day: 11, averageAwake: 0.25, averageRem: 4, averageCore: 4.34, averageDeep: 0.44, calories: 1009 },
+            { day: 12, averageAwake: 0.67, averageRem: 2.77, averageCore: 5.82, averageDeep: 0.93, calories: 793 },
+            { day: 13, averageAwake: 0.74, averageRem: 3.08, averageCore: 3.43, averageDeep: 1.62, calories: 466 },
+            { day: 14, averageAwake: 0.32, averageRem: 0.78, averageCore: 4.94, averageDeep: 1.02, calories: 355 },
+            { day: 15, averageAwake: 0.39, averageRem: 2.91, averageCore: 3.11, averageDeep: 0.2, calories: 416 },
+            { day: 16, averageAwake: 0.96, averageRem: 1.67, averageCore: 2.09, averageDeep: 0.87, calories: 905 },
+            { day: 17, averageAwake: 0.25, averageRem: 3.24, averageCore: 2.53, averageDeep: 1.17, calories: 725 },
+            { day: 18, averageAwake: 0.43, averageRem: 0.67, averageCore: 5.34, averageDeep: 0.97, calories: 463 },
+            { day: 19, averageAwake: 0.15, averageRem: 1.61, averageCore: 2.93, averageDeep: 0.84, calories: 964 },
+            { day: 20, averageAwake: 1.02, averageRem: 2.68, averageCore: 2.32, averageDeep: 0.92, calories: 336 },
+            { day: 21, averageAwake: 0.71, averageRem: 2.8, averageCore: 4.76, averageDeep: 0.66, calories: 721 },
+            { day: 22, averageAwake: 0.72, averageRem: 3.84, averageCore: 4.81, averageDeep: 1.35, calories: 699 },
+            { day: 23, averageAwake: 0.15, averageRem: 4.2, averageCore: 5.37, averageDeep: 1.17, calories: 319 },
+            { day: 24, averageAwake: 1.06, averageRem: 3.01, averageCore: 2.08, averageDeep: 0.98, calories: 610 },
+            { day: 25, averageAwake: 0.48, averageRem: 3.49, averageCore: 4.15, averageDeep: 0.41, calories: 747 },
+            { day: 26, averageAwake: 0.06, averageRem: 0.64, averageCore: 3.79, averageDeep: 0.55, calories: 257 },
+            { day: 27, averageAwake: 1.03, averageRem: 3.02, averageCore: 5.36, averageDeep: 0.89, calories: 693 },
+            { day: 28, averageAwake: 0.04, averageRem: 3.99, averageCore: 5.46, averageDeep: 1.73, calories: 717 },
+            { day: 29, averageAwake: 0.96, averageRem: 3.53, averageCore: 4.83, averageDeep: 0.73, calories: 552 },
+            { day: 30, averageAwake: 0.84, averageRem: 1.45, averageCore: 3.42, averageDeep: 1.11, calories: 953 },
+            { day: 31, averageAwake: 0.16, averageRem: 3.37, averageCore: 5.93, averageDeep: 0.91, calories: 697 },
+
+            //Jan
+            { day: 1, averageAwake: 0.23, averageRem: 0.75, averageCore: 3.75, averageDeep: 0.83, calories: 501 },
+            { day: 2, averageAwake: 0.17, averageRem: 1.5, averageCore: 4, averageDeep: 0.75, calories: 252 },
+            { day: 3, averageAwake: 0.17, averageRem: 1, averageCore: 3, averageDeep: 0.5, calories: 508 },
+            { day:4, averageAwake: 0.54, averageRem: 2.3, averageCore: 3.5, averageDeep: 1, calories: 343 },
+            { day: 5, averageAwake: 0.17, averageRem: 2.3, averageCore: 5, averageDeep: 0.5, calories: 636 },
+            { day: 6, averageAwake: 0.07, averageRem: 1.83, averageCore: 4, averageDeep: 0.5, calories: 176 },
+            { day: 7, averageAwake: 0.083, averageRem: 0.5, averageCore: 1.5, averageDeep: 1, calories: 627 },
+            { day: 8, averageAwake: 0.17, averageRem: 0.58, averageCore: 2.67, averageDeep: 0.67, calories: 520 },
+            { day: 9, averageAwake: 0.1, averageRem: 1.33, averageCore: 4.2, averageDeep: 0.75, calories: 704 },
+            { day: 10, averageAwake: 0.1, averageRem: 2, averageCore: 6, averageDeep: 0.58, calories: 459 },
+            { day: 11, averageAwake: 0.2, averageRem: 0.6, averageCore: 2.3, averageDeep: 0.17, calories: 527 },
+            { day: 12, averageAwake: 0.5, averageRem: 1.41, averageCore: 5, averageDeep: 0.17, calories: 563},
+            { day: 13, averageAwake: 0.17, averageRem: 0.75, averageCore: 3.4, averageDeep: 1, calories: 534 },
+            { day: 14, averageAwake: 2.8, averageRem: 2.2, averageCore: 5.3, averageDeep: 0.83, calories: 666 },
+            { day: 15, averageAwake: 0.05, averageRem: 0.85, averageCore: 4.85, averageDeep: 0.26, calories: 652 },
+            { day: 16, averageAwake: 0.05, averageRem: 1.45, averageCore: 5.1, averageDeep: 0.67, calories: 590 },
+            { day: 17, averageAwake: 0.05, averageRem: 1.85, averageCore: 5, averageDeep: 0.7, calories: 623 },
+            { day: 18, averageAwake: 0.1, averageRem: 1.75, averageCore: 4, averageDeep: 0.75, calories: 511 },
+            { day: 19, averageAwake: 0.1, averageRem: 1.1, averageCore: 4.75, averageDeep: 0.4, calories: 549 },
+            { day: 20, averageAwake: 0.1, averageRem: 1.9, averageCore: 4.75, averageDeep: 1, calories: 684 },
+            { day: 21, averageAwake: 0.75, averageRem: 1.1, averageCore: 3.5, averageDeep: 0.85, calories: 607 },
+            { day: 22, averageAwake: 0.2, averageRem: 1.5, averageCore: 3.75, averageDeep: 0.75, calories: 604 },
+            { day: 23, averageAwake: 0, averageRem: 1.6, averageCore: 3.4, averageDeep: 1.2, calories: 641 },
+            { day: 24, averageAwake: 0.33, averageRem: 1.9, averageCore: 5.3, averageDeep: 0.5, calories: 518 },
+            { day: 25, averageAwake: 0.17, averageRem: 1.67, averageCore: 4.45, averageDeep: 1, calories: 508 },
+            { day: 26, averageAwake: 0.1, averageRem: 1.5, averageCore: 4.17, averageDeep: 0.6, calories: 677 },
+            { day: 27, averageAwake: 0.2, averageRem: 1.75, averageCore: 4.5, averageDeep: 0.17, calories: 1010 },
+            { day: 28, averageAwake: 0.1, averageRem: 1.17, averageCore: 4.5, averageDeep: 0.33, calories: 792 },
+            { day: 29, averageAwake: 0.1, averageRem: 0.5, averageCore: 2.35, averageDeep: 0.7, calories: 998 },
+            { day: 30, averageAwake: 0.1, averageRem: 1.25, averageCore: 3.75, averageDeep: 1.05, calories: 406},
+            { day: 31, averageAwake: 0.07, averageRem: 1.4, averageCore: 3.6, averageDeep: 1, calories: 661 },
+           //Feb
+            { day: 1, averageAwake: 0.25, averageRem: 1.41, averageCore: 4.75, averageDeep: 1.17, calories: 372 },
+            { day: 2, averageAwake: 0.1, averageRem: 2, averageCore: 6, averageDeep: 0.58, calories: 459 },
+            { day: 3, averageAwake: 0.2, averageRem: 0.6, averageCore: 2.3, averageDeep: 0.17, calories: 527 },
+            { day: 4, averageAwake: 0.5, averageRem: 1.41, averageCore: 5, averageDeep: 0.17, calories: 563},
+            { day: 5, averageAwake: 0.17, averageRem: 0.75, averageCore: 3.4, averageDeep: 1, calories: 534 },
+            { day: 6, averageAwake: 1.8, averageRem: 2.7, averageCore: 5.3, averageDeep: 1.3, calories: 666 },
+            { day: 7, averageAwake: 0.05, averageRem: 0.85, averageCore: 4.85, averageDeep: 0.26, calories: 652 },
+            { day: 8, averageAwake: 0.05, averageRem: 1.45, averageCore: 5.1, averageDeep: 0.67, calories: 590 },
+            { day: 9, averageAwake: 0.05, averageRem: 1.85, averageCore: 5, averageDeep: 0.7, calories: 623 },
+            { day: 10, averageAwake: 0.1, averageRem: 1.75, averageCore: 4, averageDeep: 0.75, calories: 511 },
+            { day: 11, averageAwake: 0.1, averageRem: 1.1, averageCore: 4.75, averageDeep: 0.4, calories: 549 },
+            { day: 12, averageAwake: 0.1, averageRem: 1.9, averageCore: 4.75, averageDeep: 1, calories: 684 },
+            { day: 13, averageAwake: 0.75, averageRem: 1.1, averageCore: 3.5, averageDeep: 0.85, calories: 607 },
+            { day: 14, averageAwake: 0.2, averageRem: 1.5, averageCore: 3.75, averageDeep: 0.75, calories: 604 },
+            { day: 15, averageAwake: 0.1, averageRem: 2, averageCore: 6, averageDeep: 0.58, calories: 459 },
+            { day: 16, averageAwake: 0.2, averageRem: 0.6, averageCore: 2.3, averageDeep: 0.17, calories: 527 },
+            { day: 17, averageAwake: 0.5, averageRem: 1.41, averageCore: 5, averageDeep: 0.17, calories: 563},
+            { day: 18, averageAwake: 0.17, averageRem: 0.75, averageCore: 3.4, averageDeep: 1, calories: 534 },
+            { day: 19, averageAwake: 2.8, averageRem: 2.2, averageCore: 5.3, averageDeep: 0.83, calories: 666 },
+            { day: 20, averageAwake: 0.05, averageRem: 0.85, averageCore: 4.85, averageDeep: 0.26, calories: 652 },
+            { day: 21, averageAwake: 0.05, averageRem: 1.45, averageCore: 5.1, averageDeep: 0.67, calories: 590 },
+            { day: 22, averageAwake: 0.05, averageRem: 1.85, averageCore: 5, averageDeep: 0.7, calories: 623 },
+            { day: 23, averageAwake: 0.1, averageRem: 1.75, averageCore: 4, averageDeep: 0.75, calories: 511 },
+            { day: 24, averageAwake: 0.1, averageRem: 1.1, averageCore: 4.75, averageDeep: 0.4, calories: 549 },
+            { day: 25, averageAwake: 0.1, averageRem: 1.9, averageCore: 4.75, averageDeep: 1, calories: 684 },
+            { day: 26, averageAwake: 0.75, averageRem: 1.1, averageCore: 3.5, averageDeep: 0.85, calories: 607 },
+            { day: 27, averageAwake: 0.2, averageRem: 1.5, averageCore: 3.75, averageDeep: 0.75, calories: 604 },
+            { day: 28, averageAwake: 0.17, averageRem: 0.75, averageCore: 3.4, averageDeep: 1, calories: 834 },
+            { day: 29, averageAwake: 0.05, averageRem: 1.85, averageCore: 5, averageDeep: 0.7, calories: 923 },
+               
+
+        ];
+
+        const width = 2000, height = 1500;
+        const outerRadius = Math.min(width, height) / 2;
+        const gap = 0.01;
+
+
+
+        const svg = d3.select('body').append('svg')
+            .attr('width', width)
+            .attr('height', height)
+            .append('g')
+            .attr('transform', `translate(${width / 3}, ${height / 2})`);
+
+          // 在SVG创建代码后添加
+        const tooltip = d3.select('body').append('div')
+            .attr('class', 'tooltip')
+            .style('opacity', 1);
+
+        const stack = d3.stack().keys(["averageAwake", "averageRem", "averageCore", "averageDeep"]);
+        const stackedData = stack(sleepAndCalorieData.map(d => ({
+            averageAwake: d.averageAwake, averageRem: d.averageRem, averageCore: d.averageCore, averageDeep: d.averageDeep
+        })));
+        const angleScale = d3.scaleLinear()
+            .domain([0, sleepAndCalorieData.length])
+            .range([0, 2 * Math.PI]);
+
+        const colors = ['#884645', '#E27A62', '#F38A8F', '#F5C7D8'];
+        //const colors = ['#4500AC', '#5D6AFF', '#8DCAFF', '#E76F4B'];
+
+        // 动画延迟时间
+        const animationDelay = 100; // 500 毫秒间隔
+        // Scale for the reference lines
+        const radiusScale = d3.scaleLinear()
+            .domain([0, d3.max(sleepAndCalorieData, d => d.averageAwake + d.averageRem + d.averageCore + d.averageDeep)])
+            .range([0, outerRadius]);
+
+        // Draw reference lines
+        const referenceLinesData = [3, 6, 9]; // Example reference lines for every 3 hours of sleep
+        referenceLinesData.forEach(d => {
+            svg.append("circle")
+                .attr("class", "referenceLine")
+                .attr("r", radiusScale(d))
+                .attr("fill", "none")
+                .attr("stroke", "white")
+                .attr("stroke-dasharray", "2,2");
+        });
+
+        // 定义参考线的长度，可以根据需要调整
+        const referenceLineLength = radiusScale(9); // 9小时的环形参考线的半径
+
+        // 绘制参考线，使其从柱状图的中间位置延伸出去
+        sleepAndCalorieData.forEach((d, i) => {
+            const startAngle = angleScale(i) + gap / 2; // 计算当前柱状图的起始角度
+            const endAngle = angleScale(i + 1) - gap / 2; // 计算当前柱状图的结束角度
+            const middleAngle = (startAngle + endAngle) / 2; // 计算中间角度
+
+        svg.append('line')
+            .attr('x1', 0)
+            .attr('y1', 0)
+            .attr('x2', referenceLineLength * Math.cos(middleAngle)) // 使用中间角度的cos值计算x坐标
+            .attr('y2', referenceLineLength * Math.sin(middleAngle)) // 使用中间角度的sin值计算y坐标
+            .attr('stroke', 'GRAY') // 设置线条颜色
+            .attr('stroke-width', 1) // 可以调整线条宽度
+            .attr('stroke-dasharray', '2,2') // 设置线条样式为虚线
+            .attr('opacity', 0.5); 
+        });
+
+
+        // 绘制堆积柱状图并添加动画
+        stackedData.forEach((layer, index) => {
+            layer.forEach((d, i) => {
+                const startAngle = angleScale(i) + gap / 2;
+                const endAngle = angleScale(i + 1) - gap / 2;
+
+                svg.append('path')
+                    .attr('d', d3.arc()
+                        .innerRadius(outerRadius * (d[0] / 15))
+                        .outerRadius(outerRadius * (d[1] / 15))
+                        .startAngle(startAngle)
+                        .endAngle(endAngle))
+                    .attr('fill', colors[index % colors.length])
+                    .attr('opacity', 0) // 初始不可见
+                    .transition() // 开始动画
+                    .delay(i * animationDelay) // 每个数据点延迟
+                    .attr('opacity', 1); // 最终可见
+                    
+            });
+        });
+
+        // 添加代表卡路里消耗的圆点动画
+        sleepAndCalorieData.forEach((d, i) => {
+            const angle = angleScale(i) + angleScale(-90) / 2;
+            const baseRadius = outerRadius - 160;
+            const x = baseRadius * Math.cos(angle);
+            const y = baseRadius * Math.sin(angle);
+            const circleRadius = Math.sqrt(d.calories);
+
+            svg.append('circle')
+                .attr('cx', x)
+                .attr('cy', y)
+                .attr('r', 0) // 初始半径为0
+                .attr('fill', 'red')
+                .attr('stroke', 'white',10)
+                .attr('opacity', 0.3)
+                .transition() // 开始动画
+                .delay(i * animationDelay) // 每个数据点延迟
+                .attr('r', circleRadius); // 动态调整圆点大小
+
+     
+        })
+       
+        var legendG = svg.append('g') // 添加一个新的g元素用于legend
+        .attr('transform', `translate(${width / 3 - 20}, ${-height / 2 + 80})`); // 定位到svg的右上角
+
+        var legend = legendG.selectAll(".legend")
+        .data([
+            {color: "#884645", text: "averageAwake"},
+            {color: "#E27A62", text: "averageRem"},
+            {color: "#F38A8F", text: "averageCore"},
+            {color: "#F5C7D8", text: "averageDeep"},
+            {color: "red",  text: "Daily Calories"},
+        ])
+        .enter().append("g")
+            .attr("class", "legend")
+            .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+            legend.append("rect")
+            .attr("x", 100)
+            .attr("width", 50)
+            .attr("height", 18)
+            .attr("fill", d => d.color);
+
+        legend.append("text")
+            .attr("x", 0) // 文本与图标的间距
+            .attr("y", 9)
+            .attr("dy", ".35em")
+            .style("text-anchor", "start") // 文本对齐方式
+            .style("fill", "#ffffff") // 文本颜色
+            .style("font-size", "14px") // 文本大小
+            .text(d => d.text);
+
+
+    </script>
+</body>
+</html>
